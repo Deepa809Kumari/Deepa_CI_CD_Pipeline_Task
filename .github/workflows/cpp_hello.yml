@@ -1,0 +1,25 @@
+name: C++ Hello World Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install C++ compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Build Hello World
+        run: g++ main.cpp -o hello_from_ci
+
+      - name: Run program
+        run: ./hello_from_ci
