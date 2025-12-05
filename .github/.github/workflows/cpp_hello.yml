@@ -1,0 +1,30 @@
+name: C++ Hello World Pipeline
+
+# When should this pipeline run?
+on:
+  push:                 # run on every push to main
+    branches: [ "main" ]
+  workflow_dispatch:    # allow manual trigger from Actions tab
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest    # GitHub-hosted Linux VM
+
+    steps:
+      # 1) Get your repository code on the runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Install C++ compiler
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      # 3) Compile main.cpp
+      - name: Build Hello World
+        run: g++ main.cpp -o hello_from_ci
+
+      # 4) Run the compiled program
+      - name: Run Hello World
+        run: ./hello_from_ci
