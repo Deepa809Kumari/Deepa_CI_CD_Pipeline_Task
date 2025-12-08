@@ -25,7 +25,8 @@ jobs:
       - name: Download esmini binary
         shell: pwsh
         run: |
-          $url = "https://github.com/esmini/esmini/releases/download/v2.38.0/esmini-bin-Windows.zip"
+          # Download latest Windows binary package
+          $url = "https://github.com/esmini/esmini/releases/latest/download/esmini-bin_win_x64.zip"
           Write-Host "Downloading esmini from $url"
           Invoke-WebRequest -Uri $url -OutFile "esmini.zip"
           Expand-Archive esmini.zip -DestinationPath "esmini"
