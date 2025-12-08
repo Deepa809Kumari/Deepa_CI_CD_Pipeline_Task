@@ -1,0 +1,56 @@
+name: Esmini Demo Pipeline
+
+on:
+  push:
+    branches: [ "main" ]   # change to "master" if your repo branch is master
+  workflow_dispatch:        # allows manual run from Actions tab
+
+jobs:
+  run-esmini-demo:
+    runs-on: ubuntu-latest   # GitHub's Linux VM (not your Windows laptop)
+
+    steps:
+      # 1) Get your repository files
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Install basic tools
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+
+      # 3) Download esmini Linux demo/binary package
+      - name: Download esmini demo package
+        run: |
+          mkdir esmini_demo
+          cd esmini_demo
+          # 👉 REPLACE this URL with actual esmini Linux zip URL from Releases
+          wget "<ESMINI_ZIP_URL>"
+          ls
+
+      # 4) Unzip esmini package
+      - name: Unzip esmini
+        run: |
+          cd esmini_demo
+          unzip *.zip
+          echo "After unzip, contents are:"
+          ls
+
+      # 5) Run esmini demo (cut-in.xosc) in headless mode
+      - name: Run esmini demo headless
+        run: |
+          cd esmini_demo
+          echo "Listing esmini_demo contents:"
+          ls
+
+          # 👉 Adjust folder name if different (check logs from previous step)
+          cd esmini
+
+          echo "Listing bin and resources:"
+          ls
+          ls bin
+          ls resources/xosc
+
+          # Run built-in demo scenario (no UI)
+          ./bin/esmini --headless --osc ./resources/xosc/cut-in.xosc --info_text 1
