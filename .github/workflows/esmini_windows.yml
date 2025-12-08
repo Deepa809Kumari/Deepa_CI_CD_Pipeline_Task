@@ -22,17 +22,13 @@ jobs:
           Get-ChildItem -Recurse
 
       # 3) Download esmini Windows binary
-      - name: Download esmini binary
-        shell: pwsh
-        run: |
-          # Download latest Windows binary package
-          $url = "https://github.com/esmini/esmini/releases/latest/download/esmini-bin_win_x64.zip"
-          Write-Host "Downloading esmini from $url"
-          Invoke-WebRequest -Uri $url -OutFile "esmini.zip"
-          Expand-Archive esmini.zip -DestinationPath "esmini"
-          Write-Host "esmini extracted content:"
-          Get-ChildItem -Recurse .\esmini
-
+     - name: Download ESmini (Windows release)
+      run: |
+        curl -L -o esmini.zip https://github.com/esmini/esmini/releases/latest/download/esmini-windows.zip
+        tar -xf esmini.zip
+     - name: Add ESmini to PATH
+      run: |
+        echo "${{ github.workspace }}\esmini-windows\bin" >> $env:GITHUB_PATH
       # 4) Copy your scenario and road file into esmini resource folders
       - name: Copy XOSC and XODR into esmini resources
         shell: pwsh
