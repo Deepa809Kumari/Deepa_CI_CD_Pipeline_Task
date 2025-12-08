@@ -1,25 +1,33 @@
-name: C++ Hello World Pipeline
+name: C++ Hello World Pipeline (Windows)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]      # change to "master" if your repo uses master
   workflow_dispatch:
 
 jobs:
   build-and-run:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest   # 👈 Windows runner
 
     steps:
+      # 1) Get your repository code (main.cpp etc.)
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install C++ compiler
+      # 2) Install a C++ compiler (MinGW g++)
+      - name: Install MinGW (g++)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential
+          choco install mingw -y
+          echo "##[group]Set PATH for MinGW"
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $env:GITHUB_PATH
+          echo "##[endgroup]"
 
+      # 3) Build Hello World (assumes you have main.cpp in repo root)
       - name: Build Hello World
-        run: g++ main.cpp -o hello_from_ci
+        run: |
+          g++ main.cpp -o hello_from_ci.exe
 
+      # 4) Run the program
       - name: Run program
-        run: ./hello_from_ci
+        run: |
+          .\hello_from_ci.exe
