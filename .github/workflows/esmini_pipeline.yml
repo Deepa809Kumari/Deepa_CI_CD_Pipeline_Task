@@ -2,19 +2,19 @@ name: Esmini Demo Pipeline
 
 on:
   push:
-    branches: [ "main" ]   # change to "master" if your repo branch is master
-  workflow_dispatch:        # allows manual run from Actions tab
+    branches: [ "main" ]      # change to "master" if your default branch is master
+  workflow_dispatch:           # lets you run manually from Actions tab
 
 jobs:
   run-esmini-demo:
-    runs-on: ubuntu-latest   # GitHub's Linux VM (not your Windows laptop)
+    runs-on: ubuntu-latest     # GitHub Linux VM (CI machine)
 
     steps:
-      # 1) Get your repository files
+      # 1) Get your repository content
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) Install basic tools
+      # 2) Install tools needed to download and unzip esmini
       - name: Install tools
         run: |
           sudo apt-get update
@@ -25,8 +25,10 @@ jobs:
         run: |
           mkdir esmini_demo
           cd esmini_demo
-          # 👉 REPLACE this URL with actual esmini Linux zip URL from Releases
-          wget "<ESMINI_ZIP_URL>"
+          # 👉 VERY IMPORTANT:
+          #    Replace YOUR_ESMINI_ZIP_URL with the actual ZIP link from
+          #    https://github.com/esmini/esmini/releases/latest
+          wget "YOUR_ESMINI_ZIP_URL"
           ls
 
       # 4) Unzip esmini package
@@ -37,14 +39,15 @@ jobs:
           echo "After unzip, contents are:"
           ls
 
-      # 5) Run esmini demo (cut-in.xosc) in headless mode
+      # 5) Run esmini built-in cut-in demo in headless mode
       - name: Run esmini demo headless
         run: |
           cd esmini_demo
           echo "Listing esmini_demo contents:"
           ls
 
-          # 👉 Adjust folder name if different (check logs from previous step)
+          # By default the demo zip unzips into a folder named 'esmini'
+          # If logs show a different folder name, change 'esmini' below.
           cd esmini
 
           echo "Listing bin and resources:"
@@ -52,5 +55,5 @@ jobs:
           ls bin
           ls resources/xosc
 
-          # Run built-in demo scenario (no UI)
+          # Run built-in demo scenario (no UI window, only logs)
           ./bin/esmini --headless --osc ./resources/xosc/cut-in.xosc --info_text 1
